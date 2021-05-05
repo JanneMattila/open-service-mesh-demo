@@ -1,5 +1,6 @@
 aksName="osm"
-workspaceName="osm"
+acrName="osmacr"
+workspaceName="osmworkspace"
 resourceGroupName="rg-osm-platform"
 subscriptionName="AzureDev"
 location="northeurope"
@@ -8,6 +9,7 @@ aadSecurityGroupSearch="janne" # Group has this name :)
 # Login and set correct context
 az login -o table
 az account set --subscription $subscriptionName -o table
+az account show -o table
 
 subscriptionID=$(az account show -o tsv --query id)
 az group create -l $location -n $resourceGroupName -o table
@@ -19,7 +21,7 @@ az ad group list --display-name $aadSecurityGroupSearch
 az ad group list --display-name $aadSecurityGroupSearch --query [].objectId -o tsv
 aadAdmingGroup=$(az ad group list --display-name $aadSecurityGroupSearch --query [].objectId -o tsv)
 
-workspaceid=$(az monitor log-analytics workspace show -g $resourceGroupName -n $workspaceName --query id -o tsv)
+workspaceid=$(az monitor log-analytics workspace create -g $resourceGroupName -n $workspaceName --query id -o tsv)
 echo $workspaceid
 
 az aks get-versions -l $location -o table
